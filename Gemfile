@@ -1,4 +1,6 @@
 source 'https://rubygems.org'
 gem 'mongo'
 gem 'pry'
-gem 'json'
+gem 'dotenv'
+gem 'rake'
+gem 'rails', '4.2.6'

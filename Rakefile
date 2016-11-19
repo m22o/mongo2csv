@@ -1,21 +1,23 @@
 require "pry"
 require "mongo"
-require 'json'
 require "csv"
+require 'dotenv'
+Dotenv.load
+
 
 QUERY_NUMBER = 3
 namespace :airbnb do
   desc "convert_csv"
-  task "to_csv" => :environment do
-    db = Mongo::Client.new([HOST], :database => DB_NAME)
-    rooms_json  = db[MONGO_COLLECTION].find().limit(QUERY_NUMBER).to_json
-    results = JSON.parse(rooms_json)
+  task "to_csv"  do
+    db = Mongo::Client.new([ENV["HOST"]], :database => ENV["DB_NAME"])
+    rooms = db[ENV["MONGO_COLLECTION"]].find().limit(QUERY_NUMBER).to_a
     clean_data = []
+    binding.pry
     types = ["id","star_rating","amenities","country","property_type","reviews_count","room_type","star_rating"]
-    results.each do |result|
+    rooms.each do |result|
       # if results[0]["payload"]["country"] == "Japan"
-        clean_data << [
-          result[types[0]],
+      clean_data << [
+        result[types[0]],
         result["payload"][types[1]],
         result["payload"][types[2]].to_s,
         result["payload"][types[3]],
