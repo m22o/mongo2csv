@@ -8,12 +8,14 @@ namespace :airbnb do
   desc "convert_csv"
   task "to_csv" => :environment do
     db = Mongo::Client.new([HOST], :database => DB_NAME)
-    rooms_json  = db[MONGO_COLLECTION].find().limit(QUERY_NUMBER).to_json
+    # rooms_json  = db[MONGO_COLLECTION].find().limit(QUERY_NUMBER).to_json
+    rooms_json  = db[MONGO_COLLECTION].find().to_json
+
     results = JSON.parse(rooms_json)
     clean_data = []
     types = ["id","star_rating","amenities","country","property_type","reviews_count","room_type","star_rating"]
     results.each do |result|
-      # if results[0]["payload"]["country"] == "Japan"
+      if result["payload"]["country"] == "Japan"
         clean_data << [
           result[types[0]],
         result["payload"][types[1]],
