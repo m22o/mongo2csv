@@ -13,19 +13,21 @@ namespace :airbnb do
 
     results = JSON.parse(rooms_json)
     clean_data = []
-    types = ["id","star_rating","amenities","country","property_type","reviews_count","room_type","star_rating"]
+    types = ["id","star_rating","amenities","country","property_type","reviews_count","room_type","state","city","address"]
     results.each do |result|
       if result["payload"]["country"] == "Japan"
         clean_data << [
           result[types[0]],
-        result["payload"][types[1]],
-        result["payload"][types[2]].to_s,
-        result["payload"][types[3]],
-        result["payload"][types[4]],
-        result["payload"][types[5]],
-        result["payload"][types[6]],
-        result["payload"][types[7]],
-        result["payload"][types[8]],
+          result["payload"][types[1]],
+          result["payload"][types[2]].to_s,
+          result["payload"][types[3]],
+          result["payload"][types[4]],
+          result["payload"][types[5]],
+          result["payload"][types[6]],
+          result["payload"][types[7]],
+          result["payload"][types[8]],
+          result["payload"][types[9]],
+          result["payload"][types[10]],
       ]
       # end
     end

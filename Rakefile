@@ -5,7 +5,8 @@ require 'dotenv'
 Dotenv.load
 
 QUERY_NUMBER = 10000
-SELECT_COUNTRY = ["Japan","United States","France","Italy","Spain","United Kingdom","Germany","Brazil","Australia","Russia","Canada","Croatia","China"]
+SELECT_COUNTRY = ["Japan"]
+# ,"United States","France","Italy","Spain","United Kingdom","Germany","Brazil","Australia","Russia","Canada","Croatia","China"
 namespace :airbnb do
   desc "convert_csv"
   task "to_csv"  do
@@ -14,7 +15,7 @@ namespace :airbnb do
     SELECT_COUNTRY.each do |country|
     rooms = db[ENV["MONGO_COLLECTION"]].find({'payload.country':country}).to_a
     clean_data = []
-    types = ["id","star_rating","amenities","country","property_type","reviews_count","room_type","star_rating"]
+    types = ["id","star_rating","amenities","country","property_type","reviews_count","room_type","state","city","address"]
     rooms.each do |result|
       clean_data << [
         result[types[0]],
@@ -26,6 +27,8 @@ namespace :airbnb do
         result["payload"][types[6]],
         result["payload"][types[7]],
         result["payload"][types[8]],
+        result["payload"][types[9]],
+        result["payload"][types[10]],
       ]
     end
     CSV.open("airbnb_#{country}.csv",'w') do |data|
