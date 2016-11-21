@@ -4,19 +4,18 @@ require "csv"
 require 'dotenv'
 Dotenv.load
 
-QUERY_NUMBER = 20
-
+QUERY_NUMBER = 10000
+SELECT_COUNTRY = ["Japan","United States","France","Italy","Spain","United Kingdom","Germany","Brazil","Australia","Russia","Canada","Croatia","China"]
 namespace :airbnb do
   desc "convert_csv"
   task "to_csv"  do
     db = Mongo::Client.new([ENV["HOST"]], :database => ENV["DB_NAME"])
-    rooms = db[ENV["MONGO_COLLECTION"]].find().limit(QUERY_NUMBER).to_a
-    #rooms = db[ENV["MONGO_COLLECTION"]].find().to_a
+    #rooms = db[ENV["MONGO_COLLECTION"]].find({'payload.country':SELECT_COUNTRY}).limit(QUERY_NUMBER).to_a
+    SELECT_COUNTRY.each do |country|
+    rooms = db[ENV["MONGO_COLLECTION"]].find({'payload.country':country}).to_a
     clean_data = []
-    binding.pry
     types = ["id","star_rating","amenities","country","property_type","reviews_count","room_type","star_rating"]
     rooms.each do |result|
-      if result["payload"]["country"] == "Japan"
       clean_data << [
         result[types[0]],
         result["payload"][types[1]],
@@ -28,13 +27,13 @@ namespace :airbnb do
         result["payload"][types[7]],
         result["payload"][types[8]],
       ]
-      end
     end
-    CSV.open('airbnb.csv','w') do |data|
+    CSV.open("airbnb_#{country}.csv",'w') do |data|
       data << types
       clean_data.each do |d|
         data << d
       end
+    end
     end
   end
 end
