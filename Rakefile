@@ -37,16 +37,12 @@ namespace :airbnb do
   task "to_csv"  do
     db = Mongo::Client.new([ENV["HOST"]], :database => ENV["DB_NAME"])
     #rooms = db[ENV["MONGO_COLLECTION"]].find({'payload.country':SELECT_COUNTRY}).limit(QUERY_NUMBER).to_a
-
     SELECT_COUNTRY.each do |country|
-      if country == SELECT_COUNTRY[2]
-        exit
-      end
       rooms = db[ENV["MONGO_COLLECTION"]].find({'payload.country':country}).to_a
       loop_count = rooms.size/MAX_NUM + 1
       loop_count.times do |loop_count|
-        puts start_num = loop_count*MAX_NUM
-        puts end_num = (loop_count+1)*MAX_NUM - 1
+        start_num = loop_count*MAX_NUM
+        end_num = (loop_count+1)*MAX_NUM - 1
         export_csv(rooms[start_num..end_num],country,loop_count)
       end
     end
